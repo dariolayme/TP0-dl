@@ -25,8 +25,8 @@ int main(void)
 
 	// Usando el config creado previamente
 	// Lee las variables de IP, Puerto y Valor
-	ip = config_get_int_value(config,"IP");
-	log_info(logger,"Lei esto %i", ip);
+	ip = config_get_string_value(config,"CLAVE");
+	log_info(logger,"Lei esto %s", ip);
 
 	//Loggear valor de config
 
@@ -118,8 +118,12 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
 	//Y por ultimo, para cerrar, hay que liberar lo que utilizamos (conexion, log y config) con las funciones de las
 	//commons y del TP mencionadas en el enunciado
-
-	log_destroy(logger);
-
-	config_destroy(logger);
+	if(logger != NULL)
+	{
+		log_destroy(logger);
+	}
+	if(config != NULL)
+	{
+		config_destroy(config);
+	}
 }

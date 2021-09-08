@@ -1,5 +1,7 @@
 #include"utils.h"
 
+//SERVIDOR
+
 int iniciar_servidor(void)
 {
 	int socket_servidor;
