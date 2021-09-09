@@ -8,6 +8,8 @@ int iniciar_servidor(void)
 
     struct addrinfo hints, *servinfo, *p;
 
+
+
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
@@ -16,14 +18,34 @@ int iniciar_servidor(void)
     getaddrinfo(IP, PUERTO, &hints, &servinfo);
 
     // Creamos el socket de escucha del servidor
+    socket_servidor = socket(servinfo->ai_family,servinfo->ai_socktype,servinfo->ai_flags);
+
+    if(socket_servidor != 0)
+    	printf("[SERVER]-No se pudo conectar al socket");
+    else
+    	printf("[SERVER]-Se pudo conectar al socket");
 
     // Asociamos el socket a un puerto
+    bind(socket_servidor,servinfo->ai_addr,servinfo->ai_addrlen);//listo el socket necesitamos asignarle el puerto a utilizar. Devuelve 0 si salio bien sino -1
+    //(1)descriptor de archivo del socket
+    //(2)puntero a sockddr, que contengan la informacion del puerto
+    //(3)tamaño de la informacion del puerto del parametro (2)
+
 
     // Escuchamos las conexiones entrantes
 
     freeaddrinfo(servinfo);
 
+    listen(socket_servidor,SOMAXCONN);//Para activar el socket
+       //(1) recive el socket
+       //(2) el numero maximo de conexiones pendientes que pueden estar en la colade conexiones antes  de q el socket comienze a rechazar nuevas conexiones. Devuelve 0 si salio bien sino -1
+
+
     log_trace(logger, "Listo para escuchar a mi cliente");
+
+    while(1){
+    	esperar_cliente(socket_servidor);//los datos se deben reiniciar
+    }
 
     return socket_servidor;
 }
@@ -32,13 +54,40 @@ int esperar_cliente(int socket_servidor)
 {
 	struct sockaddr_in dir_cliente;
 	int tam_direccion = sizeof(struct sockaddr_in);
-
-	// Aceptamos un nuevo cliente
 	int socket_cliente = 0;
 
-	log_info(logger, "Se conecto un cliente!");
+	// Aceptamos un nuevo cliente
+	socket_cliente = accept(socket_servidor,dir_cliente->sin_addr,dir_cliente->sin_);//devuelve numero no negativo si salio OK
+	//(1) socket del servidor
+	//(2) puntero a la struct de la direccion del cliente, donde la funcion alamacenará la info de la direccion del socket del cliente
+	//(3) puntero al tamaño del struct (2)
+	if(socket_cliente < 0)
+	{
+		log_info(logger, "Se conecto un cliente!");
+
+	}
+	t_paquete paquete;
+
+
+	paquete->codigo_operacion = recibir_operacion(socket_cliente);
+	paquete->buffer->stream = recibir_buffer(&(paquete->buffer->size),socket_cliente);
+
+
+
 
 	return socket_cliente;
+}
+
+void procesar_pedido(int cod_op, int socket_cliente )
+{
+	int size;
+	void* msg;
+
+	switch(cod_op){
+	case MENSAJE:
+
+	case PAQUETE:
+	}
 }
 
 int recibir_operacion(int socket_cliente)
@@ -93,5 +142,5 @@ t_list* recibir_paquete(int socket_cliente)
 	}
 	free(buffer);
 	return valores;
-	return NULL;
+	//return NULL;
 }

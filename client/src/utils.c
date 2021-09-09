@@ -41,14 +41,17 @@ int crear_conexion(char *ip, char* puerto)
 
 	// Ahora que tenemos el socket, vamos a conectarlo
 	//(1)el socket a conectarse, (2) el puntero	que contiene la estructura de la direccion (3) es la estructura del puntero pasado en el campo(2)
-	if(connect(socket_cliente,))
+	if(connect(socket_cliente,server_info->ai_addr,server_info->ai_addrlen) != 0)
+	{
+		printf("Error");//no hace falta ponerlo en un log?
+	}
 
 	freeaddrinfo(server_info);
 
 	return socket_cliente;
 }
 
-void enviar_mensaje(char* mensaje, int socket_cliente)
+void enviar_mensaje(char* mensaje, int socket_cliente)//Segun Ennciado deberia recir el tamañano (3)
 {
 	t_paquete* paquete = malloc(sizeof(t_paquete));
 
@@ -62,7 +65,11 @@ void enviar_mensaje(char* mensaje, int socket_cliente)
 
 	void* a_enviar = serializar_paquete(paquete, bytes);
 
-	send(socket_cliente, a_enviar, bytes, 0);
+	send(socket_cliente, a_enviar, bytes, 0);//devuelve el numero de bytes enviados
+	//(1) el socket donde se envia los datos
+	//(2) buffer, q son los datos a enviar
+	//(3) la cantidad de bytes a enviar, ya q el (2) es un puntero al comienzo
+	//(4)bandera??
 
 	free(a_enviar);
 	eliminar_paquete(paquete);
@@ -76,14 +83,12 @@ void crear_buffer(t_paquete* paquete)
 	paquete->buffer->stream = NULL;
 }
 
-t_paquete* crear_super_paquete(void)
+t_paquete* crear_super_paquete(void)//modif??
 {
-	//me falta un malloc!
-	t_paquete* paquete;
+	t_paquete* paquete=malloc(sizeof(t_paquete));
 
-	//descomentar despues de arreglar
-	//paquete->codigo_operacion = PAQUETE;
-	//crear_buffer(paquete);
+	paquete->codigo_operacion = PAQUETE;
+	crear_buffer(paquete);
 	return paquete;
 }
 
