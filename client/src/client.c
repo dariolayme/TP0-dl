@@ -1,6 +1,9 @@
 #include "client.h"
 
 #include<readline/readline.h>
+#include<readline/history.h>
+
+
 
 int main(void)
 {
@@ -8,9 +11,10 @@ int main(void)
 	int conexion;
 	char* ip;
 	char* puerto;
-	char* valor;
+	//char* valor;
+	char* msg;
 
-	t_log* logger;
+
 	t_config* config;
 
 	logger = iniciar_logger();
@@ -25,12 +29,13 @@ int main(void)
 
 	// Usando el config creado previamente
 	// Lee las variables de IP, Puerto y Valor
-	ip = config_get_string_value(config,"CLAVE");
+	ip = config_get_string_value(config,"IP");
 	log_info(logger,"Lei esto %s", ip);
+	puerto = config_get_string_value(config,"PUERTO");
 
 	//Loggear valor de config
 
-	leer_consola(logger);
+	msg = leer_consola(logger);
 
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
@@ -42,7 +47,8 @@ int main(void)
 
 	//enviar CLAVE al servirdor
 
-	paquete(conexion);
+
+	paquete(conexion,msg);
 
 	terminar_programa(conexion, logger, config);
 
@@ -58,7 +64,7 @@ t_log* iniciar_logger(void)
 
 	if(nuevo_logger == NULL)
 	{
-		printf("No se pudo crear el LOGGER\n");
+		printf("[CLIENTE]-No se pudo crear el LOGGER\n");
 		exit(1);
 	}
 
@@ -73,44 +79,47 @@ t_config* iniciar_config(void)
 
 	if(nuevo_config == NULL)
 	{
-		printf("No se pudo crear el T_config\n");
+		printf("[CLIENTE]-No se pudo crear el T_config\n");
 		exit(1);
 	}
-
 
 	return nuevo_config;
 }
 
-void leer_consola(t_log* logger)
+char* leer_consola(t_log* logger)
 {
 	char* leido;
 	char* comando = ">";
 	char* centinela = "\0";
+	char* mensaje = string_new();
 
 	//El primero te lo dejo de yapa
 	leido = readline(comando);
+	string_append(&mensaje,leido);
 
 	while(strcmp(leido,centinela) != 0){
 		log_info(logger,leido);
 		leido = readline(comando);
+		string_append(&mensaje,leido);
 	}
-	log_info(logger,"Terminado");
+	log_info(logger,"[CLIENTE]-Terminado");
+	//printf(mensaje);
+	free(leido);
 
-	free(1);
-
+	return mensaje;
 	// Acá la idea es que imprimas por el log lo que recibis de la consola.
 
 
 
 }
 
-void paquete(int conexion)
+void paquete(int conexion, char* mensaje)
 {
 	//Ahora toca lo divertido!
-
-	char* leido;
-	t_paquete* paquete;
-
+	t_paquete* paquete = crear_paquete();
+	agregar_a_paquete(paquete,(char*)mensaje,string_length(mensaje)+1 );
+	enviar_paquete(paquete,conexion);
+	eliminar_paquete(paquete);
 
 }
 

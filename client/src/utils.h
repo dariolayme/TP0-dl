@@ -9,6 +9,9 @@
 #include<netdb.h>
 #include<string.h>
 #include<commons/log.h>
+#include <commons/string.h>
+
+t_log* logger;
 
 typedef enum
 {

@@ -1,0 +1,20 @@
+[INFO] 14:16:00:461 Servidor/(4901:4901): [SERVER]-Servidor listo para recibir al cliente
+[INFO] 18:51:20:659 Servidor/(3776:3776): [SERVER]-Servidor listo para recibir al cliente
+[INFO] 18:56:11:764 Servidor/(3776:3776): [SERVER]-Me llegaron los siguientes valores:
+
+[INFO] 18:56:11:765 Servidor/(3776:3776): 65454465464646
+
+[ERROR] 18:56:11:861 Servidor/(3776:3776): [SERVER]-el cliente se desconecto. Terminando servidor
+[INFO] 19:01:00:800 Servidor/(3971:3971): [SERVER]-Servidor listo para recibir al cliente
+[INFO] 19:12:12:49 Servidor/(4080:4080): [SERVER]-Servidor listo para recibir al cliente
+[INFO] 19:16:14:771 Servidor/(4080:4080): [SERVER]-Me llegaron los siguientes valores:
+
+[INFO] 19:16:14:771 Servidor/(4080:4080): Hola Chau
+
+[ERROR] 19:16:14:772 Servidor/(4080:4080): [SERVER]-el cliente se desconecto. Terminando servidor
+[INFO] 07:06:17:743 Servidor/(3028:3028): [SERVER]-Servidor listo para recibir al cliente
+[INFO] 07:08:12:521 Servidor/(3028:3028): [SERVER]-Me llegaron los siguientes valores:
+
+[INFO] 07:08:12:521 Servidor/(3028:3028): 123
+
+[ERROR] 07:08:12:522 Servidor/(3028:3028): [SERVER]-el cliente se desconecto. Terminando servidor

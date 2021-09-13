@@ -2,20 +2,7 @@
 
 //CLIENTE
 
-void* serializar_paquete(t_paquete* paquete, int bytes)
-{
-	void * magic = malloc(bytes);
-	int desplazamiento = 0;
 
-	memcpy(magic + desplazamiento, &(paquete->codigo_operacion), sizeof(int));
-	desplazamiento+= sizeof(int);
-	memcpy(magic + desplazamiento, &(paquete->buffer->size), sizeof(int));
-	desplazamiento+= sizeof(int);
-	memcpy(magic + desplazamiento, paquete->buffer->stream, paquete->buffer->size);
-	desplazamiento+= paquete->buffer->size;
-
-	return magic;
-}
 
 int crear_conexion(char *ip, char* puerto)
 {
@@ -43,12 +30,27 @@ int crear_conexion(char *ip, char* puerto)
 	//(1)el socket a conectarse, (2) el puntero	que contiene la estructura de la direccion (3) es la estructura del puntero pasado en el campo(2)
 	if(connect(socket_cliente,server_info->ai_addr,server_info->ai_addrlen) != 0)
 	{
-		printf("Error");//no hace falta ponerlo en un log?
+		log_error(logger,"[CLIENTE]-No se conecto al Socket del servidor");//no hace falta ponerlo en un log?
 	}
 
 	freeaddrinfo(server_info);
 
 	return socket_cliente;
+}
+
+void* serializar_paquete(t_paquete* paquete, int bytes)
+{
+	void * magic = malloc(bytes);
+	int desplazamiento = 0;
+
+	memcpy(magic + desplazamiento, &(paquete->codigo_operacion), sizeof(int));
+	desplazamiento+= sizeof(int);
+	memcpy(magic + desplazamiento, &(paquete->buffer->size), sizeof(int));
+	desplazamiento+= sizeof(int);
+	memcpy(magic + desplazamiento, paquete->buffer->stream, paquete->buffer->size);
+	desplazamiento+= paquete->buffer->size;
+
+	return magic;
 }
 
 void enviar_mensaje(char* mensaje, int socket_cliente)//Segun Ennciado deberia recir el tamañano (3)
@@ -105,6 +107,7 @@ void agregar_a_paquete(t_paquete* paquete, void* valor, int tamanio)
 	paquete->buffer->stream = realloc(paquete->buffer->stream, paquete->buffer->size + tamanio + sizeof(int));
 
 	memcpy(paquete->buffer->stream + paquete->buffer->size, &tamanio, sizeof(int));
+
 	memcpy(paquete->buffer->stream + paquete->buffer->size + sizeof(int), valor, tamanio);
 
 	paquete->buffer->size += tamanio + sizeof(int);

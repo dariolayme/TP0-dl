@@ -15,6 +15,5 @@ C_DEPS :=
 SUBDIRS := \
 client/Debug/src \
 client/src \
-server/Debug/src \
 server/src \
 
